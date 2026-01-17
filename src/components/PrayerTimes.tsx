@@ -22,6 +22,8 @@ export default function PrayerTimes() {
   const [nextPrayer, setNextPrayer] = useState<string>("");
   const [timeUntilNext, setTimeUntilNext] = useState<string>("");
   const [progress, setProgress] = useState<number>(0);
+  const [isRestrictedTime, setIsRestrictedTime] = useState<boolean>(false);
+  const [restrictedTimeReason, setRestrictedTimeReason] = useState<string>("");
 
   const fetchPrayerTimes = async (latitude: number, longitude: number) => {
     try {
@@ -153,6 +155,82 @@ export default function PrayerTimes() {
     });
   };
 
+  const addMinutesToTime = (time: string, minutes: number): string => {
+    const timeMinutes = convertToMinutes(time);
+    const newMinutes = timeMinutes + minutes;
+    const hours = Math.floor(newMinutes / 60) % 24;
+    const mins = newMinutes % 60;
+    return `${hours.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}`;
+  };
+
+  // Check if current time is in a restricted period
+  useEffect(() => {
+    if (!prayerData) return;
+
+    const now = new Date();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+    const sunriseMinutes = convertToMinutes(prayerData.Sunrise);
+    const dhuhrMinutes = convertToMinutes(prayerData.Dhuhr);
+    const asrMinutes = convertToMinutes(prayerData.Asr);
+    const maghribMinutes = convertToMinutes(prayerData.Maghrib);
+
+    console.log("Current time (minutes):", currentMinutes);
+    console.log(
+      "Sunrise:",
+      prayerData.Sunrise,
+      "->",
+      sunriseMinutes,
+      "End:",
+      sunriseMinutes + 20,
+    );
+    console.log(
+      "Dhuhr:",
+      prayerData.Dhuhr,
+      "->",
+      dhuhrMinutes,
+      "Start:",
+      dhuhrMinutes - 10,
+    );
+    console.log("Asr:", prayerData.Asr, "->", asrMinutes);
+    console.log("Maghrib:", prayerData.Maghrib, "->", maghribMinutes);
+
+    // Restricted times:
+    // 1. From sunrise until ~20 minutes after
+    // 2. Few minutes before Dhuhr (when sun is at zenith)
+    // 3. From Asr until Maghrib
+
+    const sunriseEnd = sunriseMinutes + 20;
+    const dhuhrStart = dhuhrMinutes - 10;
+
+    if (currentMinutes >= sunriseMinutes && currentMinutes <= sunriseEnd) {
+      setIsRestrictedTime(true);
+      setRestrictedTimeReason(
+        "Sunrise period - voluntary prayers not recommended (~20 min after sunrise)",
+      );
+      console.log("RESTRICTED: Sunrise period");
+    } else if (currentMinutes >= dhuhrStart && currentMinutes < dhuhrMinutes) {
+      setIsRestrictedTime(true);
+      setRestrictedTimeReason(
+        "Sun at zenith - voluntary prayers not recommended (~10 min before Dhuhr)",
+      );
+      console.log("RESTRICTED: Dhuhr period");
+    } else if (
+      currentMinutes >= asrMinutes &&
+      currentMinutes < maghribMinutes
+    ) {
+      setIsRestrictedTime(true);
+      setRestrictedTimeReason(
+        "Afternoon period - voluntary prayers not recommended (after Asr until Maghrib)",
+      );
+      console.log("RESTRICTED: Asr period");
+    } else {
+      setIsRestrictedTime(false);
+      setRestrictedTimeReason("");
+      console.log("NOT RESTRICTED");
+    }
+  }, [prayerData, currentTime]);
+
   const mainPrayers: Array<keyof PrayerTimings> = [
     "Fajr",
     "Dhuhr",
@@ -269,27 +347,151 @@ export default function PrayerTimes() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-              {prayerData &&
-                mainPrayers.map((prayer) => (
+              {prayerData && (
+                <>
+                  {/* Fajr */}
                   <div
-                    key={prayer}
                     className={`rounded-lg border p-4 text-center transition-all ${
-                      prayer === currentPrayer
+                      "Fajr" === currentPrayer
                         ? "border-primary bg-primary/10 shadow-md"
-                        : prayer === nextPrayer
+                        : "Fajr" === nextPrayer
                           ? "border-accent bg-accent/10"
                           : "bg-card hover:bg-accent/5"
                     }`}
                   >
                     <p className="mb-2 text-sm font-medium text-muted-foreground">
-                      {prayer}
+                      Fajr
                     </p>
                     <p className="text-2xl font-bold tabular-nums">
-                      {prayerData[prayer]}
+                      {prayerData.Fajr}
                     </p>
                   </div>
-                ))}
+
+                  {/* Restricted Time 1: After Sunrise */}
+                  <div className="rounded-lg border-2 border-destructive/50 bg-destructive/10 p-4 text-center">
+                    <p className="mb-2 text-xs font-semibold text-destructive uppercase">
+                      ⛔ Restricted
+                    </p>
+                    <p className="text-sm font-medium text-destructive">
+                      {prayerData.Sunrise}
+                    </p>
+                    <p className="text-xs text-muted-foreground my-1">to</p>
+                    <p className="text-sm font-medium text-destructive">
+                      {addMinutesToTime(prayerData.Sunrise, 20)}
+                    </p>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      After sunrise
+                    </p>
+                  </div>
+
+                  {/* Dhuhr */}
+                  <div
+                    className={`rounded-lg border p-4 text-center transition-all ${
+                      "Dhuhr" === currentPrayer
+                        ? "border-primary bg-primary/10 shadow-md"
+                        : "Dhuhr" === nextPrayer
+                          ? "border-accent bg-accent/10"
+                          : "bg-card hover:bg-accent/5"
+                    }`}
+                  >
+                    <p className="mb-2 text-sm font-medium text-muted-foreground">
+                      Dhuhr
+                    </p>
+                    <p className="text-2xl font-bold tabular-nums">
+                      {prayerData.Dhuhr}
+                    </p>
+                  </div>
+
+                  {/* Asr */}
+                  <div
+                    className={`rounded-lg border p-4 text-center transition-all ${
+                      "Asr" === currentPrayer
+                        ? "border-primary bg-primary/10 shadow-md"
+                        : "Asr" === nextPrayer
+                          ? "border-accent bg-accent/10"
+                          : "bg-card hover:bg-accent/5"
+                    }`}
+                  >
+                    <p className="mb-2 text-sm font-medium text-muted-foreground">
+                      Asr
+                    </p>
+                    <p className="text-2xl font-bold tabular-nums">
+                      {prayerData.Asr}
+                    </p>
+                  </div>
+
+                  {/* Restricted Time 2: After Asr until Maghrib */}
+                  <div className="rounded-lg border-2 border-destructive/50 bg-destructive/10 p-4 text-center">
+                    <p className="mb-2 text-xs font-semibold text-destructive uppercase">
+                      ⛔ Restricted
+                    </p>
+                    <p className="text-sm font-medium text-destructive">
+                      {prayerData.Asr}
+                    </p>
+                    <p className="text-xs text-muted-foreground my-1">to</p>
+                    <p className="text-sm font-medium text-destructive">
+                      {prayerData.Maghrib}
+                    </p>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      Until sunset
+                    </p>
+                  </div>
+
+                  {/* Maghrib */}
+                  <div
+                    className={`rounded-lg border p-4 text-center transition-all ${
+                      "Maghrib" === currentPrayer
+                        ? "border-primary bg-primary/10 shadow-md"
+                        : "Maghrib" === nextPrayer
+                          ? "border-accent bg-accent/10"
+                          : "bg-card hover:bg-accent/5"
+                    }`}
+                  >
+                    <p className="mb-2 text-sm font-medium text-muted-foreground">
+                      Maghrib
+                    </p>
+                    <p className="text-2xl font-bold tabular-nums">
+                      {prayerData.Maghrib}
+                    </p>
+                  </div>
+
+                  {/* Isha */}
+                  <div
+                    className={`rounded-lg border p-4 text-center transition-all ${
+                      "Isha" === currentPrayer
+                        ? "border-primary bg-primary/10 shadow-md"
+                        : "Isha" === nextPrayer
+                          ? "border-accent bg-accent/10"
+                          : "bg-card hover:bg-accent/5"
+                    }`}
+                  >
+                    <p className="mb-2 text-sm font-medium text-muted-foreground">
+                      Isha
+                    </p>
+                    <p className="text-2xl font-bold tabular-nums">
+                      {prayerData.Isha}
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
+
+            {/* Restricted Time Warning */}
+            {isRestrictedTime && (
+              <div className="mt-4 rounded-lg border-2 border-destructive/50 bg-destructive/10 p-4">
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-lg">⚠️</span>
+                  <div className="text-center">
+                    <p className="text-sm font-semibold text-destructive">
+                      Restricted Prayer Time
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {restrictedTimeReason}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="mt-6">
               <Button
