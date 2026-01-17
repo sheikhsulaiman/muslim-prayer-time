@@ -35,6 +35,8 @@ export default function PrayerTimes() {
   const [progress, setProgress] = useState<number>(0);
   const [isRestrictedTime, setIsRestrictedTime] = useState<boolean>(false);
   const [restrictedTimeReason, setRestrictedTimeReason] = useState<string>("");
+  const [isPrayerWindowEnded, setIsPrayerWindowEnded] =
+    useState<boolean>(false);
 
   const fetchPrayerTimes = async (latitude: number, longitude: number) => {
     try {
@@ -150,6 +152,14 @@ export default function PrayerTimes() {
     const elapsed = totalDuration - minutesUntilNext;
     const progressPercent = (elapsed / totalDuration) * 100;
     setProgress(Math.min(Math.max(progressPercent, 0), 100));
+
+    // Check if we're past a prayer time (prayer window ended)
+    // This happens when we're past the prayer time but before the next prayer
+    const currentPrayerMinutes =
+      prayers.find((p) => p.name === current)?.minutes || 0;
+    const isPastPrayerTime =
+      currentMinutes > currentPrayerMinutes && currentMinutes < nextTime;
+    setIsPrayerWindowEnded(isPastPrayerTime);
   }, [prayerData, currentTime]);
 
   const convertToMinutes = (time: string): number => {
@@ -216,12 +226,14 @@ export default function PrayerTimes() {
 
     if (currentMinutes >= sunriseMinutes && currentMinutes <= sunriseEnd) {
       setIsRestrictedTime(true);
+      setIsPrayerWindowEnded(false);
       setRestrictedTimeReason(
         "Sunrise period - voluntary prayers not recommended (~20 min after sunrise)",
       );
       console.log("RESTRICTED: Sunrise period");
     } else if (currentMinutes >= dhuhrStart && currentMinutes < dhuhrMinutes) {
       setIsRestrictedTime(true);
+      setIsPrayerWindowEnded(false);
       setRestrictedTimeReason(
         "Sun at zenith - voluntary prayers not recommended (~10 min before Dhuhr)",
       );
@@ -231,6 +243,7 @@ export default function PrayerTimes() {
       currentMinutes < maghribMinutes
     ) {
       setIsRestrictedTime(true);
+      setIsPrayerWindowEnded(false);
       setRestrictedTimeReason(
         "Afternoon period - voluntary prayers not recommended (after Asr until Maghrib)",
       );
@@ -313,26 +326,114 @@ export default function PrayerTimes() {
         {/* Current Prayer & Next Prayer Info */}
         <div className="grid gap-6 md:grid-cols-2">
           {/* Current Prayer Card */}
-          <Card className="border-2 border-primary/30 bg-primary/5 shadow-lg">
+          <Card
+            className={`border-2 shadow-lg ${
+              isRestrictedTime
+                ? "border-destructive/30 bg-destructive/5"
+                : isPrayerWindowEnded
+                  ? "border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/20"
+                  : "border-primary/30 bg-primary/5"
+            }`}
+          >
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
-                <BsSun className="h-5 w-5 text-primary" />
-                Current Prayer
+                {isRestrictedTime ? (
+                  <>
+                    <IoWarningOutline className="h-5 w-5 text-destructive" />
+                    Restricted Time
+                  </>
+                ) : isPrayerWindowEnded ? (
+                  <>
+                    <IoTimeOutline className="h-5 w-5 text-amber-600" />
+                    Prayer Window Ended
+                  </>
+                ) : (
+                  <>
+                    <BsSun className="h-5 w-5 text-primary" />
+                    Current Prayer
+                  </>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <p
-                  className="text-5xl font-bold text-primary"
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  {currentPrayer}
-                </p>
-                {prayerData && (
-                  <div className="flex items-center gap-2 text-2xl font-semibold tabular-nums text-muted-foreground">
-                    <IoTimeOutline className="h-6 w-6" />
-                    {prayerData[currentPrayer as keyof PrayerTimings]}
-                  </div>
+                {isRestrictedTime ? (
+                  <>
+                    <p
+                      className="text-4xl font-bold text-destructive"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      Restricted Time
+                    </p>
+                    <div className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <IoWarningOutline className="h-5 w-5 mt-0.5 shrink-0" />
+                      <p>{restrictedTimeReason}</p>
+                    </div>
+                    <div className="mt-4 rounded-lg bg-background/50 p-3">
+                      <p className="text-xs text-muted-foreground mb-1">
+                        Last prayer was:
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-lg font-semibold">{currentPrayer}</p>
+                        {prayerData && (
+                          <p className="text-sm text-muted-foreground tabular-nums">
+                            at{" "}
+                            {prayerData[currentPrayer as keyof PrayerTimings]}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                ) : isPrayerWindowEnded ? (
+                  <>
+                    <p
+                      className="text-4xl font-bold text-amber-600"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      Prayer Window Ended
+                    </p>
+                    <div className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <IoTimeOutline className="h-5 w-5 mt-0.5 shrink-0 text-amber-600" />
+                      <p>
+                        The window for {currentPrayer} prayer has passed. You
+                        can still pray, but the preferred time has ended.
+                      </p>
+                    </div>
+                    <div className="mt-4 rounded-lg bg-background/50 p-3">
+                      <p className="text-xs text-muted-foreground mb-1">
+                        Last prayer was:
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-lg font-semibold">{currentPrayer}</p>
+                        {prayerData && (
+                          <p className="text-sm text-muted-foreground tabular-nums">
+                            at{" "}
+                            {prayerData[currentPrayer as keyof PrayerTimings]}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <p
+                      className="text-5xl font-bold text-primary"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      {currentPrayer}
+                    </p>
+                    {prayerData && (
+                      <div className="flex items-center gap-2 text-2xl font-semibold tabular-nums text-muted-foreground">
+                        <IoTimeOutline className="h-6 w-6" />
+                        {prayerData[currentPrayer as keyof PrayerTimings]}
+                      </div>
+                    )}
+                    <div className="mt-3 rounded-lg bg-primary/10 p-3">
+                      <p className="text-xs text-muted-foreground">
+                        Current prayer window is active
+                      </p>
+                    </div>
+                  </>
                 )}
               </div>
             </CardContent>
