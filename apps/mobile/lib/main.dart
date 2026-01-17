@@ -23,10 +23,10 @@ class MyApp extends StatelessWidget {
             seedColor: Colors.teal,
             brightness: Brightness.light,
           ),
-          cardTheme: CardTheme(
+          cardTheme: const CardThemeData(
             elevation: 4,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.all(Radius.circular(16)),
             ),
           ),
         ),
@@ -36,10 +36,10 @@ class MyApp extends StatelessWidget {
             seedColor: Colors.teal,
             brightness: Brightness.dark,
           ),
-          cardTheme: CardTheme(
+          cardTheme: const CardThemeData(
             elevation: 4,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.all(Radius.circular(16)),
             ),
           ),
         ),

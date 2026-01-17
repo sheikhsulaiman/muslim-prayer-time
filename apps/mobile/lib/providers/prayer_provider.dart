@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import '../models/prayer_timings.dart';
 import '../services/prayer_service.dart';
 
