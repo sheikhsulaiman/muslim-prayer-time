@@ -130,7 +130,11 @@ export default function AllPrayerTimesCard({
         )}
 
         <div className="mt-6">
-          <Button onClick={onRefresh} className="w-full gap-2" variant="outline">
+          <Button
+            onClick={onRefresh}
+            className="w-full gap-2"
+            variant="outline"
+          >
             <IoRefreshOutline className="h-4 w-4" />
             Refresh Location
           </Button>

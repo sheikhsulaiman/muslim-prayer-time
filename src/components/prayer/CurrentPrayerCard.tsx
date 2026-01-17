@@ -20,12 +20,12 @@ export default function CurrentPrayerCard({
 }: CurrentPrayerCardProps) {
   return (
     <Card
-      className={`border-2 shadow-lg ${
+      className={`border-2 shadow-lg transition-all duration-300 hover:shadow-xl ${
         isRestrictedTime
-          ? "border-destructive/30 bg-destructive/5"
+          ? "border-destructive/30 bg-destructive/5 ring-2 ring-destructive/20 ring-offset-2 ring-offset-background"
           : isPrayerWindowEnded
-            ? "border-warning/30 bg-warning/10"
-            : "border-primary/30 bg-primary/5"
+            ? "border-warning/30 bg-warning/10 ring-2 ring-warning/20 ring-offset-2 ring-offset-background"
+            : "border-primary/30 bg-primary/5 ring-2 ring-primary/20 ring-offset-2 ring-offset-background backdrop-blur-sm"
       }`}
     >
       <CardHeader>

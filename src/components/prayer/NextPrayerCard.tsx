@@ -17,7 +17,7 @@ export default function NextPrayerCard({
   prayerData,
 }: NextPrayerCardProps) {
   return (
-    <Card className="border-2 border-accent/30 shadow-lg">
+    <Card className="border-2 border-accent/30 shadow-lg transition-all duration-300 hover:shadow-xl hover:ring-2 hover:ring-accent/20 hover:ring-offset-2 hover:ring-offset-background hover:-translate-y-0.5">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <IoArrowForwardOutline className="h-5 w-5 text-accent-foreground" />

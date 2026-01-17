@@ -16,10 +16,10 @@ export default function RestrictedTimeCard({
   description,
 }: RestrictedTimeCardProps) {
   return (
-    <div className="rounded-xl border-2 border-destructive/50 bg-destructive/10 p-4 text-center transition-all hover:shadow-md">
+    <div className="rounded-xl border-2 border-destructive/50 bg-destructive/10 p-4 text-center transition-all duration-300 hover:shadow-lg hover:ring-2 hover:ring-destructive/30 hover:ring-offset-2 hover:ring-offset-background hover:-translate-y-0.5 backdrop-blur-sm">
       <div className="mb-2 flex items-center justify-center gap-2">
-        <IoWarningOutline className="h-5 w-5 text-destructive" />
-        <p className="text-xs font-bold text-destructive uppercase">
+        <IoWarningOutline className="h-5 w-5 text-destructive animate-pulse" />
+        <p className="text-xs font-bold text-destructive uppercase tracking-wider">
           Restricted
         </p>
       </div>
