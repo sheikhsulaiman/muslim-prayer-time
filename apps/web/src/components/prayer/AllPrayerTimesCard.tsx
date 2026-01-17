@@ -116,11 +116,13 @@ export default function AllPrayerTimesCard({
         {isRestrictedTime && (
           <div className="mt-4 rounded-xl border-2 border-destructive/50 bg-destructive/10 p-4 shadow-md">
             <div className="flex items-center justify-center gap-3">
-              <IoWarningOutline className="h-6 w-6 text-destructive" />
-              <div className="text-center">
-                <p className="text-sm font-bold text-destructive">
-                  Restricted Prayer Time
-                </p>
+              <div className="items-center">
+                <div className="flex items-center justify-center gap-3">
+                  <IoWarningOutline className="h-6 w-6 text-destructive" />
+                  <p className="text-sm font-bold text-destructive">
+                    Restricted Prayer Time
+                  </p>
+                </div>
                 <p className="text-xs text-muted-foreground">
                   {restrictedTimeReason}
                 </p>
