@@ -1,6 +1,6 @@
 name: mobile
 description: "Muslim Prayer Time - Mobile App"
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -28,7 +28,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

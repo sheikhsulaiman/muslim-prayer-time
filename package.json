@@ -1,22 +1,22 @@
 {
-  "name": "muslim-prayer-time",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Muslim Prayer Time - Cross-platform application",
-  "scripts": {
-    "web:dev": "pnpm --filter web dev",
-    "web:build": "pnpm --filter web build",
-    "web:preview": "pnpm --filter web preview",
-    "mobile:run": "cd apps/mobile && flutter run",
-    "mobile:build:android": "cd apps/mobile && flutter build apk",
-    "mobile:build:ios": "cd apps/mobile && flutter build ios"
-  },
-  "keywords": [
-    "prayer-times",
-    "islamic",
-    "muslim",
-    "monorepo"
-  ],
-  "author": "",
-  "license": "MIT"
+    "name": "muslim-prayer-time",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Muslim Prayer Time - Cross-platform application",
+    "scripts": {
+        "web:dev": "pnpm --filter web dev",
+        "web:build": "pnpm --filter web build",
+        "web:preview": "pnpm --filter web preview",
+        "mobile:run": "cd apps/mobile && flutter run",
+        "mobile:build:android": "cd apps/mobile && flutter build apk",
+        "mobile:build:ios": "cd apps/mobile && flutter build ios"
+    },
+    "keywords": [
+        "prayer-times",
+        "islamic",
+        "muslim",
+        "monorepo"
+    ],
+    "author": "",
+    "license": "MIT"
 }
