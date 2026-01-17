@@ -96,21 +96,41 @@ class DigitalClock extends StatelessWidget {
               const SizedBox(height: 24),
 
               // Digital Clock Display
-              Text(
-                formatTime(currentTime),
-                style: TextStyle(
-                  fontSize: 72,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 4,
-                  fontFeatures: const [FontFeature.tabularFigures()],
-                  foreground: Paint()
-                    ..shader = LinearGradient(
-                      colors: [
-                        theme.colorScheme.onSurface,
-                        theme.colorScheme.onSurface.withOpacity(0.7),
-                      ],
-                    ).createShader(const Rect.fromLTWH(0, 0, 200, 70)),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  // Hours and Minutes
+                  Text(
+                    DateFormat('HH:mm').format(currentTime),
+                    style: TextStyle(
+                      fontSize: 64,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                      foreground: Paint()
+                        ..shader = LinearGradient(
+                          colors: [
+                            theme.colorScheme.onSurface,
+                            theme.colorScheme.onSurface.withOpacity(0.7),
+                          ],
+                        ).createShader(const Rect.fromLTWH(0, 0, 200, 70)),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  // Seconds
+                  Text(
+                    DateFormat(':ss').format(currentTime),
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 1,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
