@@ -121,6 +121,32 @@ export default function PrayerTimes() {
       minutes: convertToMinutes(prayerData[name]),
     }));
 
+    // Calculate Islamic midnight (midpoint between Maghrib and next Fajr)
+    const maghribMinutes = convertToMinutes(prayerData.Maghrib);
+    const fajrMinutes = convertToMinutes(prayerData.Fajr);
+    const nightDuration =
+      fajrMinutes < maghribMinutes
+        ? 24 * 60 - maghribMinutes + fajrMinutes
+        : fajrMinutes - maghribMinutes;
+    const islamicMidnight =
+      (maghribMinutes + Math.floor(nightDuration / 2)) % (24 * 60);
+
+    // Define prayer windows with their end times
+    const sunriseMinutes = convertToMinutes(prayerData.Sunrise);
+    const prayerWindows = {
+      Fajr: { start: fajrMinutes, end: sunriseMinutes },
+      Dhuhr: {
+        start: convertToMinutes(prayerData.Dhuhr),
+        end: convertToMinutes(prayerData.Asr),
+      },
+      Asr: { start: convertToMinutes(prayerData.Asr), end: maghribMinutes },
+      Maghrib: {
+        start: maghribMinutes,
+        end: convertToMinutes(prayerData.Isha),
+      },
+      Isha: { start: convertToMinutes(prayerData.Isha), end: islamicMidnight },
+    };
+
     // Find current and next prayer
     let current = "Isha";
     let next = "Fajr";
@@ -160,13 +186,25 @@ export default function PrayerTimes() {
     const progressPercent = (elapsed / totalDuration) * 100;
     setProgress(Math.min(Math.max(progressPercent, 0), 100));
 
-    // Check if we're past a prayer time (prayer window ended)
-    // This happens when we're past the prayer time but before the next prayer
-    const currentPrayerMinutes =
-      prayers.find((p) => p.name === current)?.minutes || 0;
-    const isPastPrayerTime =
-      currentMinutes > currentPrayerMinutes && currentMinutes < nextTime;
-    setIsPrayerWindowEnded(isPastPrayerTime);
+    // Check if prayer window has ended
+    // Each prayer window ends when the next prayer begins (with specific rules)
+    const currentWindow = prayerWindows[current as keyof typeof prayerWindows];
+    let windowEnded = false;
+
+    if (currentWindow) {
+      const windowEnd = currentWindow.end;
+      // Handle cases where end time might be past midnight
+      if (windowEnd < currentWindow.start) {
+        // Window crosses midnight (e.g., Isha ending at Islamic midnight before Fajr)
+        windowEnded =
+          currentMinutes >= windowEnd && currentMinutes < currentWindow.start;
+      } else {
+        // Normal case: window is within the same day
+        windowEnded = currentMinutes >= windowEnd;
+      }
+    }
+
+    setIsPrayerWindowEnded(windowEnded);
   }, [prayerData, currentTime, mainPrayers]);
 
   // Check if current time is in a restricted period
