@@ -36,6 +36,8 @@ pubspec.lock
 *.ipa
 *.dSYM.zip
 *.dSYM
+android/key.properties
+android/*.jks
 
 # Logs
 *.log
