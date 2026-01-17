@@ -12,9 +12,7 @@ class PrayerService {
   ) async {
     try {
       final response = await http.get(
-        Uri.parse(
-          '$_baseUrl?latitude=$latitude&longitude=$longitude&method=2',
-        ),
+        Uri.parse('$_baseUrl?latitude=$latitude&longitude=$longitude&method=2'),
       );
 
       if (response.statusCode == 200) {
@@ -53,9 +51,7 @@ class PrayerService {
     }
 
     return await Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-      ),
+      locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
     );
   }
 
