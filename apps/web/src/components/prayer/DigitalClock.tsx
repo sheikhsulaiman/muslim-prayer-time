@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { IoCalendarOutline, IoLocationOutline } from "react-icons/io5";
+import { ModeToggle } from "../mode-toggle";
 
 interface DigitalClockProps {
   currentTime: Date;
@@ -26,6 +27,9 @@ export default function DigitalClock({
   return (
     <Card className="overflow-hidden border-2 shadow-xl transition-all duration-300 hover:shadow-2xl bg-linear-to-br from-card to-card/50 backdrop-blur-sm">
       <CardContent className="p-6 md:p-10">
+        <div className="fixed top-4 right-4 flex justify-end">
+          <ModeToggle />
+        </div>
         <div className="space-y-6 text-center">
           <div className="flex items-center justify-center gap-8 text-sm text-muted-foreground">
             <div className="flex items-center gap-2 transition-colors hover:text-foreground">
