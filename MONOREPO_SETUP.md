@@ -32,6 +32,7 @@ muslim-prayer-time/
 ## 🚀 Quick Start Commands
 
 ### Web App
+
 ```bash
 # Run web app in development
 pnpm web:dev
@@ -48,6 +49,7 @@ pnpm dev
 ```
 
 ### Mobile App
+
 ```bash
 # Run mobile app
 pnpm mobile:run
@@ -87,6 +89,7 @@ pnpm mobile:build:ios
 ## 🔗 Shared Features (Web & Mobile)
 
 Both apps will share:
+
 - Prayer times from Aladhan API
 - Restricted prayer period detection
 - Real-time clock
