@@ -26,6 +26,10 @@ class PrayerService {
     }
   }
 
+  Future<bool> openLocationSettings() async {
+    return await Geolocator.openLocationSettings();
+  }
+
   Future<Position> getUserLocation() async {
     bool serviceEnabled;
     LocationPermission permission;

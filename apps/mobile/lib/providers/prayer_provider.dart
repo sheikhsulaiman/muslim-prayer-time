@@ -63,10 +63,14 @@ class PrayerProvider extends ChangeNotifier {
       final position = await _service.getUserLocation();
       await fetchPrayerTimes(position.latitude, position.longitude);
     } catch (e) {
-      _error = 'Unable to get your location. Please enable location services.';
+      _error = e.toString().replaceAll('Exception: ', '');
       _loading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> openLocationSettings() async {
+    await _service.openLocationSettings();
   }
 
   Future<void> fetchPrayerTimes(double latitude, double longitude) async {

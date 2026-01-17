@@ -6,8 +6,37 @@ import '../widgets/current_prayer_card.dart';
 import '../widgets/next_prayer_card.dart';
 import '../widgets/all_prayer_times_card.dart';
 
-class PrayerTimesScreen extends StatelessWidget {
+class PrayerTimesScreen extends StatefulWidget {
   const PrayerTimesScreen({super.key});
+
+  @override
+  State<PrayerTimesScreen> createState() => _PrayerTimesScreenState();
+}
+
+class _PrayerTimesScreenState extends State<PrayerTimesScreen>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // App resumed from background, retry getting location if there was an error
+      final provider = Provider.of<PrayerProvider>(context, listen: false);
+      if (provider.error != null) {
+        provider.getUserLocation();
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,9 +92,27 @@ class PrayerTimesScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      ElevatedButton(
-                        onPressed: provider.getUserLocation,
-                        child: const Text('Try Again'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (provider.error!.contains(
+                            'Location services are disabled',
+                          ))
+                            ElevatedButton.icon(
+                              onPressed: () async {
+                                await provider.openLocationSettings();
+                              },
+                              icon: const Icon(Icons.settings),
+                              label: const Text('Open Settings'),
+                            ),
+                          if (!provider.error!.contains(
+                            'Location services are disabled',
+                          ))
+                            ElevatedButton(
+                              onPressed: provider.getUserLocation,
+                              child: const Text('Try Again'),
+                            ),
+                        ],
                       ),
                     ],
                   ),
