@@ -311,7 +311,7 @@ export default function PrayerTimes() {
 
               {/* Big Digital Clock */}
               <div className="flex items-center justify-center gap-3">
-                <IoTimeOutline className="h-12 w-12 text-primary md:h-16 md:w-16" />
+                {/* <IoTimeOutline className="h-12 w-12 text-primary md:h-16 md:w-16" /> */}
                 <div
                   className="font-mono text-6xl font-bold tracking-tight md:text-8xl"
                   style={{ fontFamily: "var(--font-display)" }}
@@ -331,7 +331,7 @@ export default function PrayerTimes() {
               isRestrictedTime
                 ? "border-destructive/30 bg-destructive/5"
                 : isPrayerWindowEnded
-                  ? "border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/20"
+                  ? "border-warning/30 bg-warning/10"
                   : "border-primary/30 bg-primary/5"
             }`}
           >
@@ -344,7 +344,7 @@ export default function PrayerTimes() {
                   </>
                 ) : isPrayerWindowEnded ? (
                   <>
-                    <IoTimeOutline className="h-5 w-5 text-amber-600" />
+                    <IoTimeOutline className="h-5 w-5 text-warning-foreground" />
                     Prayer Window Ended
                   </>
                 ) : (
@@ -387,19 +387,19 @@ export default function PrayerTimes() {
                 ) : isPrayerWindowEnded ? (
                   <>
                     <p
-                      className="text-4xl font-bold text-amber-600"
+                      className="text-4xl font-bold text-warning"
                       style={{ fontFamily: "var(--font-display)" }}
                     >
                       Prayer Window Ended
                     </p>
                     <div className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <IoTimeOutline className="h-5 w-5 mt-0.5 shrink-0 text-amber-600" />
+                      {/* <IoTimeOutline className="h-5 w-5 mt-0.5 shrink-0 text-amber-600" /> */}
                       <p>
                         The window for {currentPrayer} prayer has passed. You
                         can still pray, but the preferred time has ended.
                       </p>
                     </div>
-                    <div className="mt-4 rounded-lg bg-background/50 p-3">
+                    <div className="mt-4 rounded-lg bg-background/50 p-3 border-2 border-warning">
                       <p className="text-xs text-muted-foreground mb-1">
                         Last prayer was:
                       </p>
