@@ -33,23 +33,31 @@ class PrayerService {
     // Test if location services are enabled
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      throw Exception('Location services are disabled.');
+      throw Exception(
+        'Location services are disabled. Please enable location services.',
+      );
     }
 
+    // Check current permission status
     permission = await Geolocator.checkPermission();
+
+    // If permission is denied or deniedForever, request permission
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        throw Exception('Location permissions are denied');
+        throw Exception(
+          'Location permission denied. Please grant location access to get prayer times.',
+        );
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
       throw Exception(
-        'Location permissions are permanently denied, we cannot request permissions.',
+        'Location permissions are permanently denied. Please enable location access in your device settings.',
       );
     }
 
+    // Permission is granted, get the position
     return await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
