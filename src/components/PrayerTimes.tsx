@@ -9,6 +9,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import type { AladhanResponse, PrayerTimings } from "@/types/prayer";
+import {
+  IoSunnyOutline,
+  IoMoonOutline,
+  IoTimeOutline,
+  IoLocationOutline,
+  IoCalendarOutline,
+  IoRefreshOutline,
+  IoWarningOutline,
+  IoArrowForwardOutline,
+} from "react-icons/io5";
+import { BsSunrise, BsSunset, BsSun } from "react-icons/bs";
 
 export default function PrayerTimes() {
   const [prayerData, setPrayerData] = useState<PrayerTimings | null>(null);
@@ -265,21 +276,35 @@ export default function PrayerTimes() {
   }
 
   return (
-    <div className="min-h-svh bg-linear-to-br from-background to-muted/20 p-4 md:p-8">
+    <div className="min-h-svh bg-linear-to-br from-background via-background to-muted/30 p-4 md:p-8">
       <div className="mx-auto max-w-6xl space-y-6">
         {/* Header with Clock */}
-        <Card className="overflow-hidden">
-          <CardContent className="p-6 md:p-8">
-            <div className="space-y-4 text-center">
-              <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">{date}</p>
-                <p className="text-xs text-muted-foreground">{hijriDate} AH</p>
-                <p className="text-xs text-muted-foreground">{location}</p>
+        <Card className="overflow-hidden border-2 shadow-xl">
+          <CardContent className="p-6 md:p-10">
+            <div className="space-y-6 text-center">
+              <div className="flex items-center justify-center gap-8 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <IoCalendarOutline className="h-4 w-4" />
+                  <span>{date}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <IoLocationOutline className="h-4 w-4" />
+                  <span>{location}</span>
+                </div>
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {hijriDate} AH
               </div>
 
               {/* Big Digital Clock */}
-              <div className="font-mono text-5xl font-bold tracking-wider md:text-7xl">
-                {formatTime(currentTime)}
+              <div className="flex items-center justify-center gap-3">
+                <IoTimeOutline className="h-12 w-12 text-primary md:h-16 md:w-16" />
+                <div
+                  className="font-mono text-6xl font-bold tracking-tight md:text-8xl"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  {formatTime(currentTime)}
+                </div>
               </div>
             </div>
           </CardContent>
@@ -288,48 +313,65 @@ export default function PrayerTimes() {
         {/* Current Prayer & Next Prayer Info */}
         <div className="grid gap-6 md:grid-cols-2">
           {/* Current Prayer Card */}
-          <Card className="border-2 border-primary/20 bg-primary/5">
+          <Card className="border-2 border-primary/30 bg-primary/5 shadow-lg">
             <CardHeader>
-              <CardTitle className="text-lg">Current Prayer</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <BsSun className="h-5 w-5 text-primary" />
+                Current Prayer
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2">
-                <p className="text-4xl font-bold text-primary">
+              <div className="space-y-3">
+                <p
+                  className="text-5xl font-bold text-primary"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
                   {currentPrayer}
                 </p>
                 {prayerData && (
-                  <p className="text-2xl font-semibold tabular-nums text-muted-foreground">
+                  <div className="flex items-center gap-2 text-2xl font-semibold tabular-nums text-muted-foreground">
+                    <IoTimeOutline className="h-6 w-6" />
                     {prayerData[currentPrayer as keyof PrayerTimings]}
-                  </p>
+                  </div>
                 )}
               </div>
             </CardContent>
           </Card>
 
           {/* Next Prayer Countdown */}
-          <Card className="border-2 border-accent/20">
+          <Card className="border-2 border-accent/30 shadow-lg">
             <CardHeader>
-              <CardTitle className="text-lg">Next Prayer</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <IoArrowForwardOutline className="h-5 w-5 text-accent-foreground" />
+                Next Prayer
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex items-baseline justify-between">
-                    <p className="text-4xl font-bold">{nextPrayer}</p>
+                <div className="space-y-3">
+                  <div className="flex items-baseline justify-between gap-4">
+                    <p
+                      className="text-5xl font-bold"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      {nextPrayer}
+                    </p>
                     {prayerData && (
-                      <p className="text-xl font-semibold tabular-nums text-muted-foreground">
+                      <div className="flex items-center gap-2 text-xl font-semibold tabular-nums text-muted-foreground">
+                        <IoTimeOutline className="h-5 w-5" />
                         {prayerData[nextPrayer as keyof PrayerTimings]}
-                      </p>
+                      </div>
                     )}
                   </div>
-                  <p className="text-lg font-medium text-muted-foreground">
-                    in {timeUntilNext}
-                  </p>
+                  <div className="flex items-center gap-2 text-lg font-medium text-muted-foreground">
+                    <IoTimeOutline className="h-5 w-5" />
+                    <span>in {timeUntilNext}</span>
+                  </div>
                 </div>
 
                 {/* Progress Bar */}
                 <div className="space-y-2">
-                  <Progress value={progress} className="h-3" />
+                  <Progress value={progress} className="h-4" />
                   <p className="text-xs text-muted-foreground text-right">
                     {progress.toFixed(0)}% elapsed
                   </p>
@@ -340,10 +382,15 @@ export default function PrayerTimes() {
         </div>
 
         {/* All Prayer Times */}
-        <Card>
+        <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle>Today's Prayer Times</CardTitle>
-            <CardDescription>All five daily prayers</CardDescription>
+            <CardTitle className="flex items-center gap-2">
+              <IoMoonOutline className="h-6 w-6" />
+              Today's Prayer Times
+            </CardTitle>
+            <CardDescription>
+              All five daily prayers and restricted times
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
@@ -351,32 +398,41 @@ export default function PrayerTimes() {
                 <>
                   {/* Fajr */}
                   <div
-                    className={`rounded-lg border p-4 text-center transition-all ${
+                    className={`rounded-xl border-2 p-4 text-center transition-all hover:shadow-md ${
                       "Fajr" === currentPrayer
-                        ? "border-primary bg-primary/10 shadow-md"
+                        ? "border-primary bg-primary/10 shadow-md scale-105"
                         : "Fajr" === nextPrayer
                           ? "border-accent bg-accent/10"
                           : "bg-card hover:bg-accent/5"
                     }`}
                   >
-                    <p className="mb-2 text-sm font-medium text-muted-foreground">
-                      Fajr
-                    </p>
-                    <p className="text-2xl font-bold tabular-nums">
+                    <div className="mb-3 flex items-center justify-center gap-2">
+                      <IoMoonOutline className="h-5 w-5 text-primary" />
+                      <p className="text-sm font-semibold text-muted-foreground">
+                        Fajr
+                      </p>
+                    </div>
+                    <p className="text-3xl font-bold tabular-nums">
                       {prayerData.Fajr}
                     </p>
                   </div>
 
                   {/* Restricted Time 1: After Sunrise */}
-                  <div className="rounded-lg border-2 border-destructive/50 bg-destructive/10 p-4 text-center">
-                    <p className="mb-2 text-xs font-semibold text-destructive uppercase">
-                      ⛔ Restricted
-                    </p>
-                    <p className="text-sm font-medium text-destructive">
-                      {prayerData.Sunrise}
-                    </p>
-                    <p className="text-xs text-muted-foreground my-1">to</p>
-                    <p className="text-sm font-medium text-destructive">
+                  <div className="rounded-xl border-2 border-destructive/50 bg-destructive/10 p-4 text-center transition-all hover:shadow-md">
+                    <div className="mb-2 flex items-center justify-center gap-2">
+                      <IoWarningOutline className="h-5 w-5 text-destructive" />
+                      <p className="text-xs font-bold text-destructive uppercase">
+                        Restricted
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-center gap-2 text-sm font-semibold text-destructive">
+                      <BsSunrise className="h-4 w-4" />
+                      <span>{prayerData.Sunrise}</span>
+                    </div>
+                    <div className="my-2 flex items-center justify-center">
+                      <IoArrowForwardOutline className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                    <p className="text-sm font-semibold text-destructive">
                       {addMinutesToTime(prayerData.Sunrise, 20)}
                     </p>
                     <p className="mt-2 text-xs text-muted-foreground">
@@ -386,52 +442,65 @@ export default function PrayerTimes() {
 
                   {/* Dhuhr */}
                   <div
-                    className={`rounded-lg border p-4 text-center transition-all ${
+                    className={`rounded-xl border-2 p-4 text-center transition-all hover:shadow-md ${
                       "Dhuhr" === currentPrayer
-                        ? "border-primary bg-primary/10 shadow-md"
+                        ? "border-primary bg-primary/10 shadow-md scale-105"
                         : "Dhuhr" === nextPrayer
                           ? "border-accent bg-accent/10"
                           : "bg-card hover:bg-accent/5"
                     }`}
                   >
-                    <p className="mb-2 text-sm font-medium text-muted-foreground">
-                      Dhuhr
-                    </p>
-                    <p className="text-2xl font-bold tabular-nums">
+                    <div className="mb-3 flex items-center justify-center gap-2">
+                      <BsSun className="h-5 w-5 text-amber-500" />
+                      <p className="text-sm font-semibold text-muted-foreground">
+                        Dhuhr
+                      </p>
+                    </div>
+                    <p className="text-3xl font-bold tabular-nums">
                       {prayerData.Dhuhr}
                     </p>
                   </div>
 
                   {/* Asr */}
                   <div
-                    className={`rounded-lg border p-4 text-center transition-all ${
+                    className={`rounded-xl border-2 p-4 text-center transition-all hover:shadow-md ${
                       "Asr" === currentPrayer
-                        ? "border-primary bg-primary/10 shadow-md"
+                        ? "border-primary bg-primary/10 shadow-md scale-105"
                         : "Asr" === nextPrayer
                           ? "border-accent bg-accent/10"
                           : "bg-card hover:bg-accent/5"
                     }`}
                   >
-                    <p className="mb-2 text-sm font-medium text-muted-foreground">
-                      Asr
-                    </p>
-                    <p className="text-2xl font-bold tabular-nums">
+                    <div className="mb-3 flex items-center justify-center gap-2">
+                      <IoSunnyOutline className="h-5 w-5 text-orange-500" />
+                      <p className="text-sm font-semibold text-muted-foreground">
+                        Asr
+                      </p>
+                    </div>
+                    <p className="text-3xl font-bold tabular-nums">
                       {prayerData.Asr}
                     </p>
                   </div>
 
                   {/* Restricted Time 2: After Asr until Maghrib */}
-                  <div className="rounded-lg border-2 border-destructive/50 bg-destructive/10 p-4 text-center">
-                    <p className="mb-2 text-xs font-semibold text-destructive uppercase">
-                      ⛔ Restricted
-                    </p>
-                    <p className="text-sm font-medium text-destructive">
-                      {prayerData.Asr}
-                    </p>
-                    <p className="text-xs text-muted-foreground my-1">to</p>
-                    <p className="text-sm font-medium text-destructive">
-                      {prayerData.Maghrib}
-                    </p>
+                  <div className="rounded-xl border-2 border-destructive/50 bg-destructive/10 p-4 text-center transition-all hover:shadow-md">
+                    <div className="mb-2 flex items-center justify-center gap-2">
+                      <IoWarningOutline className="h-5 w-5 text-destructive" />
+                      <p className="text-xs font-bold text-destructive uppercase">
+                        Restricted
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-center gap-2 text-sm font-semibold text-destructive">
+                      <IoSunnyOutline className="h-4 w-4" />
+                      <span>{prayerData.Asr}</span>
+                    </div>
+                    <div className="my-2 flex items-center justify-center">
+                      <IoArrowForwardOutline className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                    <div className="flex items-center justify-center gap-2 text-sm font-semibold text-destructive">
+                      <BsSunset className="h-4 w-4" />
+                      <span>{prayerData.Maghrib}</span>
+                    </div>
                     <p className="mt-2 text-xs text-muted-foreground">
                       Until sunset
                     </p>
@@ -439,36 +508,42 @@ export default function PrayerTimes() {
 
                   {/* Maghrib */}
                   <div
-                    className={`rounded-lg border p-4 text-center transition-all ${
+                    className={`rounded-xl border-2 p-4 text-center transition-all hover:shadow-md ${
                       "Maghrib" === currentPrayer
-                        ? "border-primary bg-primary/10 shadow-md"
+                        ? "border-primary bg-primary/10 shadow-md scale-105"
                         : "Maghrib" === nextPrayer
                           ? "border-accent bg-accent/10"
                           : "bg-card hover:bg-accent/5"
                     }`}
                   >
-                    <p className="mb-2 text-sm font-medium text-muted-foreground">
-                      Maghrib
-                    </p>
-                    <p className="text-2xl font-bold tabular-nums">
+                    <div className="mb-3 flex items-center justify-center gap-2">
+                      <BsSunset className="h-5 w-5 text-rose-500" />
+                      <p className="text-sm font-semibold text-muted-foreground">
+                        Maghrib
+                      </p>
+                    </div>
+                    <p className="text-3xl font-bold tabular-nums">
                       {prayerData.Maghrib}
                     </p>
                   </div>
 
                   {/* Isha */}
                   <div
-                    className={`rounded-lg border p-4 text-center transition-all ${
+                    className={`rounded-xl border-2 p-4 text-center transition-all hover:shadow-md ${
                       "Isha" === currentPrayer
-                        ? "border-primary bg-primary/10 shadow-md"
+                        ? "border-primary bg-primary/10 shadow-md scale-105"
                         : "Isha" === nextPrayer
                           ? "border-accent bg-accent/10"
                           : "bg-card hover:bg-accent/5"
                     }`}
                   >
-                    <p className="mb-2 text-sm font-medium text-muted-foreground">
-                      Isha
-                    </p>
-                    <p className="text-2xl font-bold tabular-nums">
+                    <div className="mb-3 flex items-center justify-center gap-2">
+                      <IoMoonOutline className="h-5 w-5 text-indigo-500" />
+                      <p className="text-sm font-semibold text-muted-foreground">
+                        Isha
+                      </p>
+                    </div>
+                    <p className="text-3xl font-bold tabular-nums">
                       {prayerData.Isha}
                     </p>
                   </div>
@@ -478,11 +553,11 @@ export default function PrayerTimes() {
 
             {/* Restricted Time Warning */}
             {isRestrictedTime && (
-              <div className="mt-4 rounded-lg border-2 border-destructive/50 bg-destructive/10 p-4">
-                <div className="flex items-center justify-center gap-2">
-                  <span className="text-lg">⚠️</span>
+              <div className="mt-4 rounded-xl border-2 border-destructive/50 bg-destructive/10 p-4 shadow-md">
+                <div className="flex items-center justify-center gap-3">
+                  <IoWarningOutline className="h-6 w-6 text-destructive" />
                   <div className="text-center">
-                    <p className="text-sm font-semibold text-destructive">
+                    <p className="text-sm font-bold text-destructive">
                       Restricted Prayer Time
                     </p>
                     <p className="text-xs text-muted-foreground">
@@ -496,9 +571,10 @@ export default function PrayerTimes() {
             <div className="mt-6">
               <Button
                 onClick={getUserLocation}
-                className="w-full"
+                className="w-full gap-2"
                 variant="outline"
               >
+                <IoRefreshOutline className="h-4 w-4" />
                 Refresh Location
               </Button>
             </div>
