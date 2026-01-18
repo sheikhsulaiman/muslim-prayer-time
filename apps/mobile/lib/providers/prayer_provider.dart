@@ -214,11 +214,16 @@ class PrayerProvider extends ChangeNotifier {
 
     final sunriseMinutes = _service.convertToMinutes(_prayerData!.sunrise);
     final dhuhrMinutes = _service.convertToMinutes(_prayerData!.dhuhr);
-    final asrMinutes = _service.convertToMinutes(_prayerData!.asr);
     final maghribMinutes = _service.convertToMinutes(_prayerData!.maghrib);
+
+    // Restricted times:
+    // 1. From sunrise until ~20 minutes after (sun rising a spear's length)
+    // 2. ~10-15 minutes before Dhuhr (when sun is at zenith/zawal)
+    // 3. ~15-20 minutes before Maghrib until Maghrib (sun setting/ghurub)
 
     final sunriseEnd = sunriseMinutes + 20;
     final dhuhrStart = dhuhrMinutes - 10;
+    final maghribStart = maghribMinutes - 20;
 
     if (currentMinutes >= sunriseMinutes && currentMinutes <= sunriseEnd) {
       _isRestrictedTime = true;
@@ -230,12 +235,12 @@ class PrayerProvider extends ChangeNotifier {
       _isPrayerWindowEnded = false;
       _restrictedTimeReason =
           'Sun at zenith - voluntary prayers not recommended (~10 min before Dhuhr)';
-    } else if (currentMinutes >= asrMinutes &&
+    } else if (currentMinutes >= maghribStart &&
         currentMinutes < maghribMinutes) {
       _isRestrictedTime = true;
       _isPrayerWindowEnded = false;
       _restrictedTimeReason =
-          'Afternoon period - voluntary prayers not recommended (after Asr until Maghrib)';
+          'Sunset period - voluntary prayers not recommended (~20 min before Maghrib)';
     } else {
       _isRestrictedTime = false;
       _restrictedTimeReason = '';

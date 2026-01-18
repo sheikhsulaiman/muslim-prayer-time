@@ -216,16 +216,16 @@ export default function PrayerTimes() {
 
     const sunriseMinutes = convertToMinutes(prayerData.Sunrise);
     const dhuhrMinutes = convertToMinutes(prayerData.Dhuhr);
-    const asrMinutes = convertToMinutes(prayerData.Asr);
     const maghribMinutes = convertToMinutes(prayerData.Maghrib);
 
     // Restricted times:
-    // 1. From sunrise until ~20 minutes after
-    // 2. Few minutes before Dhuhr (when sun is at zenith)
-    // 3. From Asr until Maghrib
+    // 1. From sunrise until ~20 minutes after (sun rising a spear's length)
+    // 2. ~10-15 minutes before Dhuhr (when sun is at zenith/zawal)
+    // 3. ~15-20 minutes before Maghrib until Maghrib (sun setting/ghurub)
 
     const sunriseEnd = sunriseMinutes + 20;
     const dhuhrStart = dhuhrMinutes - 10;
+    const maghribStart = maghribMinutes - 20;
 
     if (currentMinutes >= sunriseMinutes && currentMinutes <= sunriseEnd) {
       setIsRestrictedTime(true);
@@ -240,13 +240,13 @@ export default function PrayerTimes() {
         "Sun at zenith - voluntary prayers not recommended (~10 min before Dhuhr)",
       );
     } else if (
-      currentMinutes >= asrMinutes &&
+      currentMinutes >= maghribStart &&
       currentMinutes < maghribMinutes
     ) {
       setIsRestrictedTime(true);
       setIsPrayerWindowEnded(false);
       setRestrictedTimeReason(
-        "Afternoon period - voluntary prayers not recommended (after Asr until Maghrib)",
+        "Sunset period - voluntary prayers not recommended (~20 min before Maghrib)",
       );
     } else {
       setIsRestrictedTime(false);
