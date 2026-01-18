@@ -59,13 +59,22 @@ export default function AllPrayerTimesCard({
                 isNext={nextPrayer === "Fajr"}
               />
 
-              {/* Restricted Time 1: After Sunrise */}
+              {/* Restricted Time 1: After Sunrise (~20 min) */}
               <RestrictedTimeCard
                 startTime={prayerData.Sunrise}
                 endTime={addMinutesToTime(prayerData.Sunrise, 20)}
                 startIcon={<BsSunrise className="h-4 w-4" />}
                 endIcon={null}
                 description="After sunrise"
+              />
+
+              {/* Restricted Time 2: Before Dhuhr (~10 min) */}
+              <RestrictedTimeCard
+                startTime={addMinutesToTime(prayerData.Dhuhr, -10)}
+                endTime={prayerData.Dhuhr}
+                startIcon={<IoWarningOutline className="h-4 w-4" />}
+                endIcon={null}
+                description="Before Dhuhr"
               />
 
               {/* Dhuhr */}
@@ -84,9 +93,9 @@ export default function AllPrayerTimesCard({
                 isNext={nextPrayer === "Asr"}
               />
 
-              {/* Restricted Time 2: After Asr until Maghrib */}
+              {/* Restricted Time 3: Before Maghrib (~20 min) */}
               <RestrictedTimeCard
-                startTime={prayerData.Asr}
+                startTime={addMinutesToTime(prayerData.Maghrib, -20)}
                 endTime={prayerData.Maghrib}
                 startIcon={<IoSunnyOutline className="h-4 w-4" />}
                 endIcon={<BsSunset className="h-4 w-4" />}

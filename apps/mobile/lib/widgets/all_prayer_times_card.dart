@@ -70,7 +70,7 @@ class AllPrayerTimesCard extends StatelessWidget {
               ),
               const SizedBox(height: 12),
 
-              // Restricted Time 1: After Sunrise
+              // Restricted Time 1: After Sunrise (~20 min)
               _RestrictedTimeIndicator(
                 startTime: prayerData!.sunrise,
                 endTime: PrayerService().addMinutesToTime(
@@ -78,6 +78,17 @@ class AllPrayerTimesCard extends StatelessWidget {
                   20,
                 ),
                 description: 'After sunrise',
+              ),
+              const SizedBox(height: 12),
+
+              // Restricted Time 2: Before Dhuhr (~10 min)
+              _RestrictedTimeIndicator(
+                startTime: PrayerService().addMinutesToTime(
+                  prayerData!.dhuhr,
+                  -10,
+                ),
+                endTime: prayerData!.dhuhr,
+                description: 'Before Dhuhr',
               ),
               const SizedBox(height: 12),
 
@@ -99,9 +110,12 @@ class AllPrayerTimesCard extends StatelessWidget {
               ),
               const SizedBox(height: 12),
 
-              // Restricted Time 2: After Asr until Maghrib
+              // Restricted Time 3: Before Maghrib (~20 min)
               _RestrictedTimeIndicator(
-                startTime: prayerData!.asr,
+                startTime: PrayerService().addMinutesToTime(
+                  prayerData!.maghrib,
+                  -20,
+                ),
                 endTime: prayerData!.maghrib,
                 description: 'Until sunset',
               ),
